@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frosty Bites</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Pantalla de Inicio -->
+    <div id="startScreen" class="screen">
+        <div class="bg-decor">
+            <div class="cloud c1"></div>
+            <div class="cloud c2"></div>
+            <div class="cloud c3"></div>
+        </div>
+        <div class="start-card">
+            <div class="logo-ice">
+                <svg width="120" height="150" viewBox="0 0 120 150">
+                    <ellipse cx="60" cy="40" rx="35" ry="30" fill="#FFB6C1"/>
+                    <ellipse cx="45" cy="35" rx="12" ry="10" fill="#FFC0CB"/>
+                    <path d="M 30 40 Q 60 10 90 40 L 85 110 Q 60 125 35 110 Z" fill="#FFF0F5" stroke="#FF69B4" stroke-width="3"/>
+                    <rect x="48" y="110" width="24" height="20" rx="4" fill="#8B4513"/>
+                    <rect x="55" y="130" width="10" height="15" rx="2" fill="#654321"/>
+                </svg>
+            </div>
+            <h1 class="logo-text">FROSTY BITES</h1>
+            <p class="tagline">¡El sabor que te hace feliz!</p>
+            <button id="startBtn" class="btn-start">
+                <span>🍦 COMENZAR TURNO 🍦</span>
+            </button>
+            <div class="start-footer">Servimos sonrisas desde 2025</div>
+        </div>
+    </div>
+
+    <!-- Pantalla de Juego -->
+    <div id="gameScreen" class="screen" style="display:none;">
+        <!-- Header -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <div class="stat-card">
+                    <svg width="28" height="28" viewBox="0 0 28 28">
+                        <circle cx="14" cy="14" r="12" fill="#FFD700"/>
+                        <text x="14" y="19" font-size="14" font-weight="900" fill="#B8860B" text-anchor="middle">$</text>
+                    </svg>
+                    <span id="coins">0</span>
+                </div>
+                <div class="stat-card">
+                    <svg width="28" height="28" viewBox="0 0 28 28">
+                        <polygon points="14,2 17,10 26,10 19,16 21,24 14,19 7,24 9,16 2,10 11,10" fill="#FF69B4"/>
+                    </svg>
+                    <span>Nivel <span id="level">1</span></span>
+                </div>
+                <div class="stat-card">
+                    <svg width="28" height="28" viewBox="0 0 28 28">
+                        <rect x="4" y="6" width="20" height="18" rx="3" fill="#87CEEB"/>
+                        <rect x="4" y="6" width="20" height="6" rx="3" fill="#4169E1"/>
+                        <circle cx="10" cy="9" r="1.5" fill="white"/>
+                        <circle cx="18" cy="9" r="1.5" fill="white"/>
+                    </svg>
+                    <span>Día <span id="day">1</span></span>
+                </div>
+                <div class="stat-card">
+                    <svg width="28" height="28" viewBox="0 0 28 28">
+                        <circle cx="14" cy="14" r="11" fill="#98FB98" stroke="#228B22" stroke-width="2"/>
+                        <line x1="14" y1="14" x2="14" y2="8" stroke="#228B22" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="14" y1="14" x2="19" y2="14" stroke="#228B22" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span id="clock">08:00</span>
+                </div>
+            </div>
+            <div class="topbar-center">
+                <div class="shop-name">FROSTY BITES</div>
+            </div>
+            <button id="pauseBtn" class="btn-pause">
+                <svg width="20" height="20" viewBox="0 0 20 20" style="margin-right:8px">
+                    <rect x="4" y="3" width="4" height="14" rx="1" fill="white"/>
+                    <rect x="12" y="3" width="4" height="14" rx="1" fill="white"/>
+                </svg>
+                PAUSA
+            </button>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Clientes -->
+            <aside class="panel panel-customers">
+                <div class="panel-header customers-header">
+                    <svg width="24" height="24" viewBox="0 0 24 24" style="margin-right:8px">
+                        <circle cx="12" cy="8" r="4" fill="white"/>
+                        <path d="M4 20 C4 16 8 14 12 14 C16 14 20 16 20 20" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+                    </svg>
+                    CLIENTES EN FILA
+                </div>
+                <div id="customersList" class="panel-body"></div>
+            </aside>
+
+            <!-- Área de Trabajo -->
+            <section class="work-section">
+                <div class="ticket-strip">
+                    <div class="ticket-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32">
+                            <rect x="6" y="4" width="20" height="24" rx="2" fill="#FFFACD" stroke="#DAA520" stroke-width="2"/>
+                            <line x1="10" y1="10" x2="22" y2="10" stroke="#B8860B" stroke-width="2"/>
+                            <line x1="10" y1="16" x2="22" y2="16" stroke="#B8860B" stroke-width="1.5"/>
+                            <line x1="10" y1="20" x2="18" y2="20" stroke="#B8860B" stroke-width="1.5"/>
+                        </svg>
+                    </div>
+                    <div class="ticket-text">
+                        <div class="ticket-label">PEDIDO ACTUAL</div>
+                        <div id="ticket" class="ticket-content">Selecciona un cliente para ver su pedido</div>
+                    </div>
+                </div>
+                <div class="station-box">
+                    <div class="station-box-header">
+                        <h2 id="stationName">ESTACIÓN DE PEDIDOS</h2>
+                    </div>
+                    <div id="stationView" class="station-box-body"></div>
+                </div>
+            </section>
+
+            <!-- Pestañas -->
+            <nav class="panel panel-tabs">
+                <button class="tab-button active" data-station="orders">
+                    <div class="tab-bg"></div>
+                    <svg width="48" height="48" viewBox="0 0 48 48">
+                        <rect x="10" y="8" width="28" height="32" rx="3" fill="white"/>
+                        <line x1="16" y1="16" x2="32" y2="16" stroke="#4169E1" stroke-width="3"/>
+                        <line x1="16" y1="24" x2="32" y2="24" stroke="#4169E1" stroke-width="3"/>
+                        <line x1="16" y1="32" x2="26" y2="32" stroke="#4169E1" stroke-width="3"/>
+                    </svg>
+                    <span>PEDIDOS</span>
+                </button>
+                <button class="tab-button" data-station="build">
+                    <div class="tab-bg"></div>
+                    <svg width="48" height="48" viewBox="0 0 48 48">
+                        <ellipse cx="24" cy="18" rx="14" ry="12" fill="#FFB6C1"/>
+                        <path d="M12 18 Q24 6 36 18 L34 32 Q24 38 14 32 Z" fill="#FFF0F5" stroke="#FF69B4" stroke-width="2"/>
+                        <rect x="20" y="32" width="8" height="8" rx="2" fill="#8B4513"/>
+                        <rect x="22" y="40" width="4" height="6" rx="1" fill="#654321"/>
+                    </svg>
+                    <span>LLENADO</span>
+                </button>
+                <button class="tab-button" data-station="mix">
+                    <div class="tab-bg"></div>
+                    <svg width="48" height="48" viewBox="0 0 48 48">
+                        <rect x="16" y="12" width="16" height="24" rx="4" fill="#B0C4DE" stroke="#556B2F" stroke-width="3"/>
+                        <circle cx="24" cy="24" r="6" fill="#2F4F4F"/>
+                        <line x1="24" y1="18" x2="24" y2="30" stroke="#708090" stroke-width="2"/>
+                        <line x1="18" y1="24" x2="30" y2="24" stroke="#708090" stroke-width="2"/>
+                    </svg>
+                    <span>BATIDO</span>
+                </button>
+                <button class="tab-button" data-station="toppings">
+                    <div class="tab-bg"></div>
+                    <svg width="48" height="48" viewBox="0 0 48 48">
+                        <ellipse cx="24" cy="20" rx="12" ry="10" fill="#FFB6C1"/>
+                        <circle cx="20" cy="18" r="2" fill="#FF69B4"/>
+                        <circle cx="28" cy="16" r="2.5" fill="#32CD32"/>
+                        <circle cx="22" cy="24" r="2" fill="#FFD700"/>
+                        <circle cx="28" cy="22" r="1.8" fill="#DC143C"/>
+                        <path d="M16 30 L32 30 L30 38 L18 38 Z" fill="#8B4513"/>
+                    </svg>
+                    <span>TOPPINGS</span>
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Overlays -->
+    <div id="pauseScreen" class="overlay" style="display:none;">
+        <div class="modal-glass">
+            <div class="modal-icon">⏸️</div>
+            <h2>JUEGO EN PAUSA</h2>
+            <button id="resumeBtn" class="modal-btn green">▶ CONTINUAR</button>
+            <button id="restartBtn" class="modal-btn orange">🔄 REINICIAR DÍA</button>
+        </div>
+    </div>
+
+    <div id="endScreen" class="overlay" style="display:none;">
+        <div class="modal-glass end-modal">
+            <div class="modal-icon">🎉</div>
+            <h2>¡FIN DEL TURNO!</h2>
+            <div class="end-grid">
+                <div class="end-item">
+                    <div>💰 Propinas</div>
+                    <div class="end-val">+<span id="dayTips">0</span></div>
+                </div>
+                <div class="end-item">
+                    <div>✅ Completados</div>
+                    <div class="end-val"><span id="doneOrders">0</span></div>
+                </div>
+                <div class="end-item total">
+                    <div>💎 Total</div>
+                    <div class="end-val"><span id="totalCoins">0</span></div>
+                </div>
+            </div>
+            <button id="nextDayBtn" class="modal-btn green">➡ SIGUIENTE DÍA</button>
+        </div>
+    </div>
+
+    <div id="resultScreen" class="overlay" style="display:none;">
+        <div class="modal-glass result-modal">
+            <div class="modal-icon">✨</div>
+            <h2>¡PEDIDO ENTREGADO!</h2>
+            <div class="score-grid">
+                <div class="score-row">
+                    <span>🍦 Llenado</span>
+                    <span class="score-num" id="sBuild">0%</span>
+                </div>
+                <div class="score-row">
+                    <span>🌀 Batido</span>
+                    <span class="score-num" id="sMix">0%</span>
+                </div>
+                <div class="score-row">
+                    <span>🍓 Decoración</span>
+                    <span class="score-num" id="sTop">0%</span>
+                </div>
+                <div class="score-row">
+                    <span>⏱️ Rapidez</span>
+                    <span class="score-num" id="sWait">0%</span>
+                </div>
+            </div>
+            <div class="stars-big" id="stars">⭐⭐⭐⭐⭐</div>
+            <div class="tip-bubble">
+                <div>¡PROPINA!</div>
+                <div class="tip-big">💰 +<span id="tipAmt">0</span></div>
+            </div>
+            <button id="nextBtn" class="modal-btn green">SIGUIENTE CLIENTE ➡</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
