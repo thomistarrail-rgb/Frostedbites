@@ -39,6 +39,11 @@ const FLAV = [
 ];
 const SYR = ['Caramelo','Chocolate','Fruta','Vainilla'];
 const TOPS = ['Chispas de chocolate','Galleta','Cereza','Crema batida','Nueces','Lacasitos','Mini Malvaviscos'];
+const MIXLEVEL = [
+    {id:'poco', label:'POCO BATIDO'},
+    {id:'medio', label:'TÉRMINO MEDIO'},
+    {id:'mucho', label:'MUY BATIDO'}
+];
 
 const startScreen = document.getElementById('startScreen');
 const gameScreen = document.getElementById('gameScreen');
@@ -58,11 +63,10 @@ const levelEl = document.getElementById('level');
 const dayEl = document.getElementById('day');
 const clockEl = document.getElementById('clock');
 
-const tabs = document.querySelectorAll('.tab-button');
+const tabs = document.querySelectorAll('.tab-btn');
 const stationName = document.getElementById('stationName');
 const stationView = document.getElementById('stationView');
 const customersList = document.getElementById('customersList');
-const ticket = document.getElementById('ticket');
 
 const dayTipsEl = document.getElementById('dayTips');
 const doneOrdersEl = document.getElementById('doneOrders');
@@ -88,7 +92,7 @@ function init(){
 function start(){
     startScreen.style.display='none';
     gameScreen.style.display='flex';
-    state={coins:0,level:1,day:1,time:480,paused:false,station:'orders',active:null,custIdx:-1,customers:[],cId:0,oId:0,doneToday:0,dayTips:0,cupSize:null,flavor:null,fill:0,syrup:false,mixPct:0,mixing:false,mixInt:null,cream:[],tops:[]};
+    state={coins:0,level:1,day:1,time:480,paused:false,station:'orders',active:null,custIdx:-1,customers:[],cId:0,oId:0,doneToday:0,dayTips:0,cupSize:null,flavor:null,fill:0,syrup:false,mixPct:0,mixing:false,mixInt:null,cream:[],tops:[],mixLevel:MIXLEVEL[Math.floor(Math.random()*MIXLEVEL.length)].id};
     upd();
     addCust();
     goTab('orders');
@@ -109,7 +113,8 @@ function clk(){
 }
 
 function addCust(){
-    let c={id:state.cId++, name:rname(), pat:100, order:genOrd()};
+    let ml = MIXLEVEL[Math.floor(Math.random()*MIXLEVEL.length)];
+    let c={id:state.cId++, name:rname(), pat:100, order:genOrd(), mixLevel:ml.id, mixLabel:ml.label};
     state.customers.push(c);
     renderCust();
 }
@@ -131,11 +136,12 @@ function genOrd(){
 function renderCust(){
     customersList.innerHTML='';
     state.customers.forEach((c,i)=>{
-        let d=document.createElement('div');
-        d.className='cust-card'+(i==state.custIdx?' active':'');
-        d.innerHTML='<div class="cust-name">👤 '+c.name+'</div><div style="font-size:12px;margin:6px 0;font-weight:700">Paciencia</div><div class="pat-bar"><div class="pat-fill" style="width:'+c.pat+'%"></div></div>';
-        d.onclick=()=>pick(i);
-        customersList.appendChild(d);
+        let o=c.order, f=FLAV.find(x=>x.id==o.fl);
+        let wrap=document.createElement('div');
+        wrap.className='cust-wrap';
+        wrap.innerHTML='<div class="cust-card'+(i==state.custIdx?' active':'')+'"><div class="cust-name">👤 '+c.name+'</div><div style="font-size:11px;margin:4px 0;font-weight:800">Paciencia</div><div class="pat-bar"><div class="pat-fill" style="width:'+c.pat+'%"></div></div></div><div class="cust-order"><div class="cust-order-title">PEDIDO ACTUAL</div><div class="cust-order-line"><b>#'+o.id+'</b> | VASO: <b>'+o.cup+'</b></div><div class="cust-order-line">'+f.e+' SABOR: <b>'+f.n+'</b></div><div class="cust-order-line">🍯 JARABE: <b>'+o.sy+'</b></div><div class="cust-order-line">🍓 TOPPINGS: <b>'+o.tops.join(', ')+'</b></div><div class="cust-order-line">🌀 BATIDO: <b>'+c.mixLabel+'</b></div></div>';
+        wrap.querySelector('.cust-card').onclick=()=>pick(i);
+        customersList.appendChild(wrap);
     });
     if(!state.paused){
         state.customers.forEach((c,i)=>{ if(c.pat>0)c.pat-=0.35; if(c.pat<=0 && i==state.custIdx) leave(i); });
@@ -145,16 +151,11 @@ function renderCust(){
 
 function pick(i){
     state.custIdx=i; state.active=state.customers[i].order;
+    state.mixLevel=state.customers[i].mixLevel;
     state.cupSize=null; state.flavor=null; state.fill=0; state.syrup=false; state.mixPct=0; state.cream=[]; state.tops=[];
     if(state.mixInt){clearInterval(state.mixInt); state.mixInt=null;}
     state.mixing=false;
-    renderCust(); renderTick(); goTab('build');
-}
-
-function renderTick(){
-    if(!state.active){ ticket.innerHTML='<div style="color:#999;font-style:italic">Selecciona un cliente para ver su pedido</div>'; return; }
-    let o=state.active, f=FLAV.find(x=>x.id==o.fl);
-    ticket.innerHTML='<div><b>#'+o.id+'</b></div><div>🥤 VASO: <b>'+o.cup+'</b></div><div>'+f.e+' SABOR: <b>'+f.n+'</b></div><div>🍯 JARABE: <b>'+o.sy+'</b></div><div>🍓 TOPPINGS: <b>'+o.tops.join(', ')+'</b></div>';
+    renderCust(); goTab('orders');
 }
 
 function goTab(s){
@@ -174,13 +175,16 @@ function draw(){
 }
 
 function vOrders(){
+    if(!state.active){ stationView.innerHTML='<div style="text-align:center;margin-top:100px"><div style="font-size:80px">👥</div><div style="font-size:32px;font-weight:900;color:#8B4513;margin-top:20px">SELECCIONA UN CLIENTE DE LA IZQUIERDA</div></div>'; return; }
+    let o=state.active, f=FLAV.find(x=>x.id==o.fl), c=state.customers[state.custIdx];
     let d=document.createElement('div');
-    d.innerHTML='<div class="sec-title">TOMAR PEDIDO</div><div class="sec-sub">Selecciona un cliente de la fila para atenderlo</div><div style="text-align:center;font-size:100px;margin:40px 0">👥</div>'+ (state.active?'<div style="text-align:center;background:linear-gradient(135deg,#F0FFF0,#90EE90);padding:25px 40px;border-radius:20px;border:4px solid #32CD32;display:inline-block;left:50%;position:relative;transform:translateX(-50%)"><div style="font-size:28px;font-weight:900;color:#228B22">✓ ¡PEDIDO TOMADO!</div><div style="font-size:18px;color:#2E8B57;margin-top:8px;font-weight:700">Ve a la pestaña LLENADO para comenzar</div></div>':'');
+    d.innerHTML='<div class="order-detail-box"><div class="order-detail-title">DETALLES DEL PEDIDO</div><div class="order-detail-grid"><div class="order-detail-item"><b>CLIENTE:</b> '+c.name+'</div><div class="order-detail-item"><b>PEDIDO #:</b> '+o.id+'</div><div class="order-detail-item"><b>VASO:</b> '+o.cup+'</div><div class="order-detail-item"><b>SABOR:</b> '+f.e+' '+f.n+'</div><div class="order-detail-item"><b>JARABE:</b> '+o.sy+'</div><div class="order-detail-item"><b>NIVEL DE BATIDO:</b> '+c.mixLabel+'</div><div class="order-detail-item full"><b>TOPPINGS:</b> '+o.tops.join(', ')+'</div></div></div><div style="text-align:center"><button class="go-btn" id="toBuild">IR A ESTACIÓN DE LLENADO ➡️</button></div>';
     stationView.appendChild(d);
+    document.getElementById('toBuild').onclick=()=>goTab('build');
 }
 
 function vBuild(){
-    if(!state.active){ stationView.innerHTML='<div style="text-align:center;margin-top:100px"><div style="font-size:80px">⚠️</div><div style="font-size:36px;font-weight:900;color:#FF6347;margin-top:20px">¡TOMA UN PEDIDO PRIMERO!</div></div>'; return; }
+    if(!state.active){ stationView.innerHTML='<div style="text-align:center;margin-top:100px"><div style="font-size:80px">⚠️</div><div style="font-size:36px;font-weight:900;color:#FF6347;margin-top:20px">TOMA UN PEDIDO PRIMERO</div></div>'; return; }
     let o=state.active, f=FLAV.find(x=>x.id==o.fl);
     let d=document.createElement('div');
     d.innerHTML='<div class="sec-title">ELEGIR VASO Y LLENAR</div><div class="sec-sub">PASO 1: Selecciona el tamaño del vaso • PASO 2: Llena hasta la línea roja</div><div class="cup-grid">'+CUP.map(c=>'<div class="cup-card" data-c="'+c.id+'"><svg class="cup-svg" width="70" height="90" viewBox="0 0 70 90"><rect x="15" y="10" width="40" height="60" rx="4" fill="rgba(255,255,255,0.8)" stroke="#333" stroke-width="3"/><rect x="15" y="70" width="40" height="8" rx="0 0 4 4" fill="#333"/></svg><div class="cup-name">'+c.name+'</div><div class="cup-oz">'+c.oz+'</div></div>').join('')+'</div><div id="fillBox" style="display:none"><div class="sec-sub" style="font-size:22px">Sabor solicitado: '+f.e+' <b>'+f.n+'</b></div><div class="disp-container"><div class="disp-machine"><div class="disp-top"></div><div class="cup-display" id="cdisp"><div class="fill-line-red" id="cline"></div><div class="fill-ice" id="fice"></div></div></div><button class="big-btn" id="hold">⏺ MANTENER PARA LLENAR</button><button class="syrup-btn2" id="syrb">🍯 AÑADIR JARABE: '+o.sy+'</button><br><button class="go-btn" id="gob" style="display:none;margin-top:20px">CONTINUAR AL BATIDO ➡️</button></div>';
@@ -219,9 +223,10 @@ function vBuild(){
 }
 
 function vMix(){
-    if(!state.active){ stationView.innerHTML='<div style="text-align:center;margin-top:100px"><div style="font-size:80px">⚠️</div><div style="font-size:36px;font-weight:900;color:#FF6347;margin-top:20px">¡TOMA UN PEDIDO PRIMERO!</div></div>'; return; }
+    if(!state.active){ stationView.innerHTML='<div style="text-align:center;margin-top:100px"><div style="font-size:80px">⚠️</div><div style="font-size:36px;font-weight:900;color:#FF6347;margin-top:20px">TOMA UN PEDIDO PRIMERO</div></div>'; return; }
+    let c=state.customers[state.custIdx];
     let d=document.createElement('div');
-    d.innerHTML='<div class="sec-title">BATIR AL PUNTO PERFECTO</div><div class="sec-sub">Selecciona velocidad → Inicia → DETÉN cuando esté en la zona ÓPTIMA (70% - 90%)</div><div class="mix-area"><div class="mix-machine-big"><div class="blade-big" id="blade"></div></div><div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="pfill"></div></div><div class="progress-labels"><span>0%</span><span style="color:#FF8C00">BIEN</span><span style="color:#32CD32;font-size:18px">★ ÓPTIMO 70-90% ★</span><span style="color:#FF4500">MUY BATIDO</span><span>100%</span></div></div><div class="speed-grid"><button class="speed-card" data-s="slow">🐢 LENTO</button><button class="speed-card" data-s="med">🚶 MEDIO</button><button class="speed-card" data-s="fast">🏃 RÁPIDO</button></div><button class="go-btn" id="mstart" disabled>INICIAR BATIDO</button><button class="go-btn" id="mstop" style="display:none;background:linear-gradient(135deg,#FF6347,#DC143C)">⏹ DETENER BATIDO</button><button class="go-btn" id="mtop" style="display:none">IR A DECORAR ➡️</button></div>';
+    d.innerHTML='<div class="sec-title">BATIR AL PUNTO PERFECTO</div><div class="sec-sub">Cliente solicita: <b>'+c.mixLabel+'</b> • Selecciona velocidad → Inicia → DETÉN cuando esté acorde</div><div class="mix-area"><div class="mix-machine-big"><div class="blade-big" id="blade"></div></div><div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="pfill"></div></div><div class="progress-labels"><span>0%</span><span style="color:#FF8C00">BIEN</span><span style="color:#32CD32">ÓPTIMO</span><span style="color:#FF4500">MUY BATIDO</span><span>100%</span></div></div><div class="speed-grid"><button class="speed-card" data-s="slow">🐢 LENTO</button><button class="speed-card" data-s="med">🚶 MEDIO</button><button class="speed-card" data-s="fast">🏃 RÁPIDO</button></div><button class="go-btn" id="mstart" disabled>INICIAR BATIDO</button><button class="go-btn" id="mstop" style="display:none;background:linear-gradient(135deg,#FF6347,#DC143C)">⏹ DETENER BATIDO</button><button class="go-btn" id="mtop" style="display:none">IR A DECORAR ➡️</button></div>';
     stationView.appendChild(d);
     let spd=null;
     d.querySelectorAll('.speed-card').forEach(b=>b.onclick=()=>{ d.querySelectorAll('.speed-card').forEach(x=>x.classList.remove('active')); b.classList.add('active'); spd=b.dataset.s; document.getElementById('mstart').disabled=false; });
@@ -230,7 +235,7 @@ function vMix(){
         d.querySelectorAll('.speed-card').forEach(x=>x.disabled=true);
         document.getElementById('blade').classList.add('spin');
         document.getElementById('mstop').style.display='inline-block';
-        let rt=spd=='slow'?0.55:spd=='med'?0.95:1.35;
+        let rt=spd=='slow'?0.5:spd=='med'?0.9:1.3;
         state.mixing=true; state.mixPct=0;
         state.mixInt=setInterval(()=>{
             if(!state.mixing)return;
@@ -250,10 +255,10 @@ function vMix(){
 }
 
 function vTop(){
-    if(!state.active){ stationView.innerHTML='<div style="text-align:center;margin-top:100px"><div style="font-size:80px">⚠️</div><div style="font-size:36px;font-weight:900;color:#FF6347;margin-top:20px">¡TOMA UN PEDIDO PRIMERO!</div></div>'; return; }
+    if(!state.active){ stationView.innerHTML='<div style="text-align:center;margin-top:100px"><div style="font-size:80px">⚠️</div><div style="font-size:36px;font-weight:900;color:#FF6347;margin-top:20px">TOMA UN PEDIDO PRIMERO</div></div>'; return; }
     let o=state.active;
     let d=document.createElement('div');
-    d.innerHTML='<div class="sec-title">DECORAR Y TERMINAR</div><div class="sec-sub">Dibuja crema batida con el mouse • Arrastra los toppings al vaso</div><div class="top-grid"><div class="top-panel"><h3>🍓 TOPPINGS SOLICITADOS</h3>'+o.tops.map(t=>'<div class="top-draggable" draggable="true" data-t="'+t+'">'+emo(t)+'<span>'+t+'</span></div>').join('')+'</div><div class="cream-area"><h3>🍦 CREMA BATIDA</h3><canvas id="creamCanvas" width="340" height="240"></canvas><br><button class="syrup-btn2" id="clrCr" style="margin-top:16px">🗑 BORRAR CREMA</button></div><div class="decor-area"><h3>🥤 TU CREACIÓN</h3><div class="decor-cup-big"><div class="decor-items-show" id="dshow"></div></div><div style="color:#666;font-weight:700">Suelta aquí</div></div></div><div style="text-align:center;margin-top:35px"><button class="go-btn" id="finOrd">✅ ENTREGAR PEDIDO</button></div>';
+    d.innerHTML='<div class="sec-title">DECORAR Y TERMINAR</div><div class="top-grid"><div class="top-panel"><h3>🍓 TOPPINGS SOLICITADOS</h3>'+o.tops.map(t=>'<div class="top-draggable" draggable="true" data-t="'+t+'">'+emo(t)+'<span>'+t+'</span></div>').join('')+'</div><div class="cream-area"><h3>🍦 CREMA BATIDA</h3><canvas id="creamCanvas" width="340" height="240"></canvas><button class="syrup-btn2" id="clrCr" style="margin-top:16px">🗑 BORRAR</button></div><div class="decor-area"><h3>🥤 TU CREACIÓN</h3><div class="decor-cup-big"><div class="decor-items-show" id="dshow"></div></div><div style="color:#666;font-weight:700">Suelta aquí</div></div></div><div style="text-align:center;margin-top:35px"><button class="go-btn" id="finOrd">✅ ENTREGAR PEDIDO</button></div>';
     stationView.appendChild(d);
     let canv=document.getElementById('creamCanvas'), ctx=canv.getContext('2d');
     let dr=false, pts=[];
@@ -294,6 +299,10 @@ function calcB(){
 
 function calcM(){
     if(state.mixPct==0)return 62;
+    let ml=state.mixLevel;
+    if(ml=='poco'){ if(state.mixPct>=40 && state.mixPct<=60)return 100; if(state.mixPct>=35 && state.mixPct<=65)return 88; return 70; }
+    if(ml=='medio'){ if(state.mixPct>=70 && state.mixPct<=80)return 100; if(state.mixPct>=65 && state.mixPct<=85)return 90; return 74; }
+    if(ml=='mucho'){ if(state.mixPct>=88 && state.mixPct<=96)return 100; if(state.mixPct>=82 && state.mixPct<=98)return 90; return 76; }
     if(state.mixPct>=70 && state.mixPct<=90)return 100;
     if(state.mixPct>=66 && state.mixPct<=93)return 90;
     if(state.mixPct>=60 && state.mixPct<=96)return 76; return 60;
@@ -302,7 +311,7 @@ function calcM(){
 function calcT(){
     if(!state.active)return 62;
     let req=state.active.tops.length, pl=state.tops?state.tops.length:0;
-    let cr=state.cream&&state.cream.length>12?42:22;
+    let cr=state.cream&&state.cream.length>10?42:22;
     return Math.min(100, Math.floor((pl/req)*58+cr));
 }
 
@@ -316,18 +325,18 @@ function closeRes(){
     if(state.mixInt){clearInterval(state.mixInt); state.mixInt=null;}
     state.mixing=false;
     resultScreen.style.display='none';
-    renderCust(); renderTick(); goTab('orders');
+    renderCust(); goTab('orders');
     if(state.customers.length<4 && state.time<1020) setTimeout(()=>{addCust(); renderCust();},1500);
     if(state.time>=1020 && state.customers.length==0) setTimeout(endD,1000);
 }
 
-function leave(i){ state.customers.splice(i,1); if(state.custIdx==i){state.custIdx=-1; state.active=null; renderTick();} else if(state.custIdx>i) state.custIdx--; renderCust(); }
+function leave(i){ state.customers.splice(i,1); if(state.custIdx==i){state.custIdx=-1; state.active=null;} else if(state.custIdx>i) state.custIdx--; renderCust(); }
 
 function restart(){
     pauseScreen.style.display='none'; gameScreen.style.display='flex';
     state.time=480; state.customers=[]; state.cId=0; state.custIdx=-1; state.active=null; state.doneToday=0; state.dayTips=0;
     if(state.mixInt){clearInterval(state.mixInt); state.mixInt=null;}
-    renderCust(); renderTick(); goTab('orders'); addCust();
+    renderCust(); goTab('orders'); addCust();
 }
 
 function endD(){
@@ -339,7 +348,7 @@ function nxtDay(){
     endScreen.style.display='none'; gameScreen.style.display='flex'; state.paused=false;
     state.day++; state.level=Math.floor(state.day/2)+1; state.time=480; state.customers=[]; state.cId=0; state.custIdx=-1; state.active=null; state.doneToday=0; state.dayTips=0;
     if(state.mixInt){clearInterval(state.mixInt); state.mixInt=null;}
-    upd(); renderCust(); renderTick(); goTab('orders'); addCust();
+    upd(); renderCust(); goTab('orders'); addCust();
 }
 
 document.addEventListener('DOMContentLoaded',init);
