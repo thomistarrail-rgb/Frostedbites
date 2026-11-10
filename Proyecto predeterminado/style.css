@@ -80,7 +80,7 @@ body {
 .logo-ice { margin-bottom: 16px; filter: drop-shadow(0 10px 18px rgba(255,105,180,.28)); }
 .logo-text {
     font-family: 'Fredoka', sans-serif;
-    font-size: 70px;
+    font-size: calc(70px * var(--u));
     font-weight: 700;
     background: linear-gradient(135deg, #FF1493, #FF69B4, #FF1493);
     -webkit-background-clip: text;
@@ -88,14 +88,14 @@ body {
     -webkit-text-fill-color: transparent;
     letter-spacing: 10px;
 }
-.tagline { font-size: 24px; color: #4169E1; font-weight: 800; margin: 10px 0 38px; }
+.tagline { font-size: calc(24px * var(--u)); color: #4169E1; font-weight: 800; margin: 10px 0 38px; }
 .btn-start {
     background: linear-gradient(135deg, #32CD32, #228B22);
     color: #fff;
     border: none;
     padding: 20px 66px;
     border-radius: 60px;
-    font-size: 26px;
+    font-size: calc(26px * var(--u));
     font-weight: 900;
     font-family: 'Fredoka', sans-serif;
     cursor: pointer;
@@ -140,7 +140,7 @@ body {
 
 .brand-title {
     font-family: 'Fredoka', sans-serif;
-    font-size: 28px;
+    font-size: calc(28px * var(--u));
     font-weight: 700;
     color: #fff;
     letter-spacing: 12px;
@@ -198,7 +198,7 @@ body {
     color: #fff;
     font-weight: 900;
     letter-spacing: 2px;
-    font-size: 13px;
+    font-size: calc(13px * var(--u));
 }
 
 .customers-header {
@@ -264,7 +264,7 @@ body {
     border: 3px solid #DAA520;
     border-radius: 12px;
     padding: 10px 12px;
-    font-size: 12.5px;
+    font-size: calc(12.5px * var(--u));
     font-weight: 800;
     color: #7a4b12;
     line-height: 1.5;
@@ -274,7 +274,7 @@ body {
 
 .cust-order-title {
     text-align: center;
-    font-size: 11px;
+    font-size: calc(11px * var(--u));
     letter-spacing: 2px;
     color: #B8860B;
     margin-bottom: 6px;
@@ -336,7 +336,7 @@ body {
 
 .order-detail-title {
     text-align: center;
-    font-size: 18px;
+    font-size: calc(18px * var(--u));
     letter-spacing: 4px;
     color: #B8860B;
     font-weight: 900;
@@ -388,7 +388,7 @@ body {
     cursor: pointer;
     font-weight: 900;
     letter-spacing: 2px;
-    font-size: 11px;
+    font-size: calc(11px * var(--u));
 }
 
 .tab-bg {
@@ -419,7 +419,7 @@ body {
 .sec-title {
     text-align: center;
     font-family: 'Fredoka', sans-serif;
-    font-size: 34px;
+    font-size: calc(34px * var(--u));
     font-weight: 700;
     color: #8B4513;
     margin-bottom: 6px;
@@ -427,7 +427,7 @@ body {
 
 .sec-sub {
     text-align: center;
-    font-size: 18px;
+    font-size: calc(18px * var(--u));
     color: #666;
     font-weight: 700;
     margin-bottom: 30px;
@@ -464,7 +464,7 @@ body {
 }
 
 .cup-name {
-    font-size: 22px;
+    font-size: calc(22px * var(--u));
     font-weight: 900;
     color: #8B4513;
     font-family: 'Fredoka', sans-serif;
@@ -503,13 +503,13 @@ body {
 }
 
 .flav-emoji {
-    font-size: 38px;
+    font-size: calc(38px * var(--u));
     display: block;
 }
 
 .flav-name {
     font-weight: 900;
-    font-size: 11px;
+    font-size: calc(11px * var(--u));
     color: #8B4513;
 }
 
@@ -583,7 +583,7 @@ body {
     border: none;
     padding: 15px 48px;
     border-radius: 50px;
-    font-size: 21px;
+    font-size: calc(21px * var(--u));
     font-weight: 900;
     cursor: pointer;
 }
@@ -594,7 +594,7 @@ body {
     border: none;
     padding: 13px 38px;
     border-radius: 40px;
-    font-size: 18px;
+    font-size: calc(18px * var(--u));
     font-weight: 800;
     cursor: pointer;
 }
@@ -605,7 +605,7 @@ body {
     border: none;
     padding: 17px 58px;
     border-radius: 50px;
-    font-size: 23px;
+    font-size: calc(23px * var(--u));
     font-weight: 900;
     cursor: pointer;
 }
@@ -679,7 +679,7 @@ body {
     background: white;
     border: 6px solid #ddd;
     border-radius: 18px;
-    font-size: 19px;
+    font-size: calc(19px * var(--u));
     font-weight: 900;
     cursor: pointer;
 }
@@ -771,7 +771,7 @@ body {
     bottom: 8px;
     width: 100%;
     text-align: center;
-    font-size: 30px;
+    font-size: calc(30px * var(--u));
 }
 
 /* Overlays */
@@ -801,13 +801,13 @@ body {
 }
 
 .modal-icon {
-    font-size: 76px;
+    font-size: calc(76px * var(--u));
     margin-bottom: 18px;
 }
 
 .modal-glass h2 {
     font-family: 'Fredoka', sans-serif;
-    font-size: 46px;
+    font-size: calc(46px * var(--u));
     color: #FF1493;
     margin-bottom: 36px;
 }
@@ -820,7 +820,7 @@ body {
     border-radius: 50px;
     border: none;
     color: white;
-    font-size: 23px;
+    font-size: calc(23px * var(--u));
     font-weight: 900;
     font-family: 'Fredoka', sans-serif;
     cursor: pointer;
@@ -843,7 +843,7 @@ body {
     padding: 15px 28px;
     border-radius: 16px;
     border: 4px solid #ddd;
-    font-size: 21px;
+    font-size: calc(21px * var(--u));
     font-weight: 800;
     min-width: 340px;
 }
@@ -851,13 +851,13 @@ body {
 .end-item.total {
     background: linear-gradient(135deg, #F0FFF0 0%, #90EE90 100%);
     border-color: #32CD32;
-    font-size: 25px;
+    font-size: calc(25px * var(--u));
 }
 
 .end-val {
     color: #228B22;
     font-weight: 900;
-    font-size: 27px;
+    font-size: calc(27px * var(--u));
 }
 
 .score-grid {
@@ -874,19 +874,19 @@ body {
     padding: 13px 26px;
     border-radius: 14px;
     border: 3px solid #ddd;
-    font-size: 19px;
+    font-size: calc(19px * var(--u));
     font-weight: 800;
     min-width: 370px;
 }
 
 .score-num {
     color: #32CD32;
-    font-size: 23px;
+    font-size: calc(23px * var(--u));
     font-weight: 900;
 }
 
 .stars-big {
-    font-size: 54px;
+    font-size: calc(54px * var(--u));
     margin: 24px 0;
 }
 
@@ -897,12 +897,12 @@ body {
     border: 5px solid #32CD32;
     margin: 24px 0;
     display: inline-block;
-    font-size: 23px;
+    font-size: calc(23px * var(--u));
     font-weight: 900;
     color: #228B22;
 }
 
 .tip-big {
-    font-size: 34px;
+    font-size: calc(34px * var(--u));
     margin-top: 6px;
 }

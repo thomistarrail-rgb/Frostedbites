@@ -1,20 +1,10 @@
-# Frosty Bites
+# Frosty Bites 🌊
+Cafetería submarina de postres helados. HTML + CSS + JS, sin dependencias.
 
-Juego web estilo Papa's Freezeria hecho con HTML, CSS y JavaScript.
+## Probar en Chrome
+1. Abre una terminal en esta carpeta.
+2. `npx serve . -l 3000`  (o `python -m http.server 3000`)
+3. Abre http://localhost:3000
 
-## Estructura
-
-```
-/
-├── index.html
-├── css/
-│   └── style.css
-├── js/
-│   └── game.js
-└── assets/
-```
-
-## Despliegue
-
-Listo para desplegar en Vercel como sitio estático.
-```
+## Link público (Vercel)
+`npx vercel --prod` y listo.
